@@ -22,13 +22,13 @@ io.on('connection', (socket) => {
   // socket.on('createEmail', (newEmail) => { //Its listening to clientside for createEmail
   //  console.log('createEmail', newEmail);
   // });
-  socket.emit('newMessage', {
-    from:'somai.suraj@yahoo.com',
-    text:'this is a test message from server',
-    createdAt: 123
-  });
-  socket.on('createMessage', (newMsg) => {
-    console.log('createMessage:', newMsg);
+  socket.on('createMessage', (message) => {
+    console.log('createMessage:', message);
+    io.emit('newMessage', {
+      from: message.from,
+      to:message.text,
+      createdAt: new Date().getTime()
+    });
   });
 
   socket.on('disconnect', () => {

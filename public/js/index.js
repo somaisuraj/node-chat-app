@@ -11,10 +11,6 @@ socket.on('connect', function () {
     console.log('newMessage:', newMsg);
   });
 
-  socket.emit('createMessage', {
-    from:'client@side.com',
-    text:'this is new message from clientside'
-  });
 });
 socket.on('disconnect', function () {
   console.log('Disconnected from server');
