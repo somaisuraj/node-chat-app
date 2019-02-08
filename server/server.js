@@ -14,6 +14,23 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
   console.log('new user connected');
 
+  // socket.emit('newEmail', {//this is sending newEmail to clientside socket.on('', )
+  //   from:'somai@gmail.com',
+  //   text:'hey, i am from server',
+  //   createdAt: 123
+  // });
+  // socket.on('createEmail', (newEmail) => { //Its listening to clientside for createEmail
+  //  console.log('createEmail', newEmail);
+  // });
+  socket.emit('newMessage', {
+    from:'somai.suraj@yahoo.com',
+    text:'this is a test message from server',
+    createdAt: 123
+  });
+  socket.on('createMessage', (newMsg) => {
+    console.log('createMessage:', newMsg);
+  });
+
   socket.on('disconnect', () => {
     console.log('user Disconnected');
   });
