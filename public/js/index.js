@@ -11,6 +11,15 @@ socket.on('connect', function () {
     console.log('newMessage:', newMsg);
   });
 
+
+  socket.on('adminMessage', function(message) {
+    console.log('adminMessage', message);
+  });
+  
+  socket.on('broadcast', function(message) {
+    console.log('broadcast', message);
+  });
+
 });
 socket.on('disconnect', function () {
   console.log('Disconnected from server');
