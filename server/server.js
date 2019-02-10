@@ -15,26 +15,15 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
   console.log('new user connected');
 
-socket.emit('adminMessage', generateMessage('admin','Welcome to the chat app' ));
+socket.emit('newMessage', generateMessage('admin','Welcome to the chat app' ));
 
-socket.on('new user',(message) => {
-   console.log('newUser', message);
-   socket.broadcast.emit('broadcast', generateMessage('admin', `${message.from} joined`));
+socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined'));
+
+socket.on('createMessage',(message, callback) => {
+   console.log('createMessage', message);
+   io.emit('newMessage', generateMessage(`${message.from}`, `${message.text}`));
+   callback('this is from the server');//this callback is for acknowledgement
 });
-
-  // socket.on('createMessage', (message) => {// data is emiting from console.log
-  //   console.log('createMessage console:', message);
-  //   io.emit('newMessage', {
-  //     from: message.from,
-  //     to:message.text,
-  //     createdAt: new Date().getTime()
-  //   });
-  //   socket.broadcast.emit('newMessage', {//broadcast will not show the deatils of emitter ones
-  //     from: message.from,
-  //     text: message.text,
-  //     createdAt: new Date().getTime()
-  //   });
-
 
   socket.on('disconnect', () => {
     console.log('user Disconnected');
