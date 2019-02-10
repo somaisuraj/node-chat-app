@@ -11,6 +11,16 @@ socket.on('connect', function () {
   });
   });
 
+socket.on('newLocationMessage', function (message) {
+  let li = $('<li></li>');
+  let a = $('<a target="_blank">My current location</a>');
+  li.text(`${message.from}`);
+  a.attr('href', message.url);
+  li.append(a);
+  $('#messages').append(li);
+
+});
+
 socket.on('disconnect', function () {
   console.log('Disconnected from server');
 });
@@ -24,3 +34,18 @@ $('#message-form').on('submit', function (e) {
 
   });
 });
+ let locationButton = $('#send-location');
+ locationButton.on('click', function () {
+    if(!navigator.geolocation) {//this is core js library so require is not needed
+        return alert('geolocation not supported by your browser');
+    }
+    //this below function is already in browser so we can access directly
+    navigator.geolocation.getCurrentPosition(function (position) {
+       socket.emit('createLocationMessage', {
+         latitude: position.coords.latitude,
+         longitude: position.coords.longitude
+       });
+    }, function () {
+      alert('Unable to fetch location');
+    });
+ });
