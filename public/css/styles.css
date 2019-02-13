@@ -90,7 +90,13 @@ button:disabled {
 .chat__footer,
 .chat__sidebar li {
     background: #e6eaee;
-    padding: 10px
+    padding: 10px;
+
+}
+.chat__footer {
+  position: fixed;
+  bottom: 0;
+  width: 85%;
 }
 .chat__sidebar h3 {
     color: #e6eaee;
