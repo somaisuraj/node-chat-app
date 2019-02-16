@@ -15,36 +15,53 @@ function scrollToBottom () {
    }
 }
 socket.on('connect', function () {
-  console.log('connected to server');
+  var params = jQuery.deparam(window.location.search);
 
-
-  socket.on('newMessage', function(message) {
-    var formattedTime = moment(message.createdAt).format('h:mm a');
-    var template = $('#message-template').html();
-    var html = Mustache.render(template, {
-      text: message.text,
-      from: message.from,
-      createdAt: formattedTime});
-
-    $('#messages').append(html);
-    scrollToBottom();
+  socket.emit('join', params, function (error) {
+    if (error) {
+      alert(error);
+      window.location.href = '/';
+    } else {
+      console.log('no error');
+    }
   });
-
-socket.on('newLocationMessage', function (message) {
-  var formattedTime = moment(message.createdAt).format('h:mm a');
-  var template = $('#location-message-template').html();
-  var html = Mustache.render(template, {
-      from: message.from,
-      url: message.url,
-      createdAt: formattedTime
-  });
-$('#messages').append(html);
-scrollToBottom();
-});
 });
 
 socket.on('disconnect', function () {
   console.log('Disconnected from server');
+});
+
+socket.on('updateUserList', function (users) {
+  var ol = $('<ol></ol>');
+
+  users.forEach(function (user) {
+    ol.append($('<li></li>').text(user));
+  });
+  $('#users').html(ol);
+});
+
+socket.on('newMessage', function(message) {
+  var formattedTime = moment(message.createdAt).format('h:mm a');
+  var template = $('#message-template').html();
+  var html = Mustache.render(template, {
+    text: message.text,
+    from: message.from,
+    createdAt: formattedTime});
+
+  $('#messages').append(html);
+  scrollToBottom();
+});
+
+socket.on('newLocationMessage', function (message) {
+var formattedTime = moment(message.createdAt).format('h:mm a');
+var template = $('#location-message-template').html();
+var html = Mustache.render(template, {
+    from: message.from,
+    url: message.url,
+    createdAt: formattedTime
+});
+$('#messages').append(html);
+scrollToBottom();
 });
  var messageTextBox = $('[name=message]');
 
