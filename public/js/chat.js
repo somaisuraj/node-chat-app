@@ -15,8 +15,15 @@ function scrollToBottom () {
    }
 }
 socket.on('connect', function () {
+  //location.search example
+    // https://www.w3schools.com/submit.htm?email=someone@example.com:
+    //
+    // var x = location.search;
+    // The result of x will be:
+    //
+    // ?email=someone@example.com
   var params = jQuery.deparam(window.location.search);
-
+  //deparm is jquery method to make the result into object
   socket.emit('join', params, function (error) {
     if (error) {
       alert(error);
@@ -43,6 +50,7 @@ socket.on('updateUserList', function (users) {
 socket.on('newMessage', function(message) {
   var formattedTime = moment(message.createdAt).format('h:mm a');
   var template = $('#message-template').html();
+
   var html = Mustache.render(template, {
     text: message.text,
     from: message.from,
@@ -63,12 +71,12 @@ var html = Mustache.render(template, {
 $('#messages').append(html);
 scrollToBottom();
 });
- var messageTextBox = $('[name=message]');
+
 
 $('#message-form').on('submit', function (e) {
   e.preventDefault();
+  var messageTextBox = $('[name=message]');
   socket.emit('createMessage', {
-    from: 'Hunter',
     text: messageTextBox.val()
   }, function () {
    messageTextBox.val('');

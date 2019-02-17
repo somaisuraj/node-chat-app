@@ -33,7 +33,7 @@ socket.on('join', (params, callback) => {
    users.removeUser(socket.id);
    users.addUser(socket.id,params.name, params.room);
 
-   io.to(params.room).emit('updateUserList', users.getUserList(params.room));
+   io.to(params.room).emit('updateUserList', users.getUserList(params.room));//this users.getUserList return namesArra so there only users name not a object.
 
    socket.emit('newMessage', generateMessage('admin','Welcome to the chat app' ));
    socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined`));
@@ -41,13 +41,20 @@ socket.on('join', (params, callback) => {
 });
 
 socket.on('createMessage',(message, callback) => {
-   console.log('createMessage', message);
-   io.emit('newMessage', generateMessage(`${message.from}`, `${message.text}`));
-   callback();//this callback is for acknowledgement
+  let user = users.getUser(socket.id);
+
+  if (user && isRealString(message.text)) {
+    io.to(user[0].room).emit('newMessage', generateMessage(`${user[0].name}`, `${message.text}`));
+  }
+    callback();//this callback is for acknowledgement
 });
 
 socket.on('createLocationMessage', (coords) => {
-  io.emit('newLocationMessage', generateLocationMessage('admin', coords.latitude, coords.longitude));
+  let user = users.getUser(socket.id);
+  if(user) {
+     io.to(user[0].room).emit('newLocationMessage', generateLocationMessage(user[0].name, coords.latitude, coords.longitude));
+  }
+
 });
 
   socket.on('disconnect', () => {
